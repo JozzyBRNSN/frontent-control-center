@@ -2,8 +2,6 @@
 export default {
 	data() {
 		return {
-			// title: "Счетчик",
-			// counter: 0,
 			items: [
 				{ id: 1, title: "Доделать таску" },
 				{ id: 2, title: "Закрыть день" },
@@ -24,18 +22,18 @@ export default {
 			this.items.push({ id: newId, title: this.value });
 			this.value = "";
 		},
+		removeItem(id) {
+			this.items = this.items.filter(item => item.id !== id);
+		},
 	},
 };
 </script>
 
 <template>
-	<!-- <h1>{{ title }}</h1>
-	<br />
-	<div>{{ counter }}</div>
-	<button @click="counter--">-</button>
-	<button @click="counter++">+</button>
-	<hr /> -->
-	<li v-for="item in items" :key="item.id">{{ item.id }}. {{ item.title }}</li>
+	<li v-for="item in items" :key="item.id">
+		{{ item.id }}. {{ item.title }}
+		<button @click="removeItem(item.id)">Удалить</button>
+	</li>
 	<input type="text" v-model="value" />
 	<button @click="addNewItem">Добавить</button>
 </template>
