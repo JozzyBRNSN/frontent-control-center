@@ -1,7 +1,10 @@
 <script>
 import ItemRow from "./components/ItemRow.vue";
+
 export default {
-	components: { ItemRow },
+	components: {
+		ItemRow,
+	},
 	data() {
 		return {
 			items: [

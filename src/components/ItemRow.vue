@@ -3,11 +3,11 @@ export default {
 	props: {
 		id: {
 			type: Number,
-			required: true, // Говорит: «Этот пропс ОБЯЗАТЕЛЕН. Без него нельзя».
+			required: true,
 		},
 		title: {
 			type: String,
-			required: true, // Говорит: «Этот пропс ОБЯЗАТЕЛЕН. Без него нельзя».
+			required: true,
 		},
 	},
 	methods: {
