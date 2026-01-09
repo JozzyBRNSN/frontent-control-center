@@ -12,6 +12,8 @@ export default {
 			items: [],
 			value: "",
 			activeFilter: "all",
+			isLoading: true,
+			isError: false,
 		};
 	},
 	methods: {
@@ -44,6 +46,50 @@ export default {
 				item.completed = !item.completed;
 			}
 		},
+		fetchData() {
+			this.isLoading = true;
+			this.isError = false;
+
+			new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([
+						{ id: 1, title: "Учить Vue", completed: false },
+						{ id: 2, title: "Сделать TODO", completed: true },
+						{ id: 3, title: "Закончить Этап 5", completed: false },
+					]);
+				}, 1000);
+			})
+
+				.then(data => {
+					this.items = data;
+					this.isLoading = false;
+				})
+				.catch(() => {
+					this.isError = true;
+					this.isLoading = false;
+				});
+		},
+		// Подключение через настоящий API
+		// async fetchData() {
+		// 	this.isLoading = true;
+		// 	this.isError = false;
+		// 	try {
+		// 		const response = await fetch(
+		// 			"https://jsonplaceholder.typicode.com/todos?_limit=5"
+		// 		);
+		// 		if (!response.ok) throw new Error("Ошибка сети");
+		// 		const data = await response.json();
+		// 		this.items = data.map(d => ({
+		// 			id: d.id,
+		// 			title: d.title,
+		// 			completed: d.completed,
+		// 		}));
+		// 	} catch (e) {
+		// 		this.isError = true;
+		// 	} finally {
+		// 		this.isLoading = false;
+		// 	}
+		// },
 	},
 	computed: {
 		totalCount() {
@@ -65,27 +111,36 @@ export default {
 			}
 		},
 	},
+	mounted() {
+		this.fetchData();
+	},
 };
 </script>
 
 <template>
 	<div>
-		Всего: {{ totalCount }}, Активные: {{ activeCount }}, Завершенные:
-		{{ completedCount }}
+		<div v-if="isLoading">Загрузка..</div>
+		<div v-else-if="isError">Ошибка загрузки данных</div>
+		<div v-else>
+			<div>
+				Всего: {{ totalCount }}, Активные: {{ activeCount }}, Завершенные:
+				{{ completedCount }}
+			</div>
+			<FilterButtons :activeFilter="activeFilter" @set-filter="setFilter" />
+			<ul>
+				<ItemRow
+					v-for="item in visibleItems"
+					:key="item.id"
+					:id="item.id"
+					:title="item.title"
+					:completed="item.completed"
+					@remove="removeItem"
+					@update="updateItem"
+					@change="toggleCompleted(item.id)"
+				/>
+			</ul>
+			<input type="text" v-model="value" @keyup.enter="addNewItem" />
+			<button @click="addNewItem">Добавить</button>
+		</div>
 	</div>
-	<FilterButtons :activeFilter="activeFilter" @set-filter="setFilter" />
-	<ul>
-		<ItemRow
-			v-for="item in visibleItems"
-			:key="item.id"
-			:id="item.id"
-			:title="item.title"
-			:completed="item.completed"
-			@remove="removeItem"
-			@update="updateItem"
-			@change="toggleCompleted(item.id)"
-		/>
-	</ul>
-	<input type="text" v-model="value" @keyup.enter="addNewItem" />
-	<button @click="addNewItem">Добавить</button>
 </template>
