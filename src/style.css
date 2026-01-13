@@ -50,6 +50,30 @@ h1 {
 	color: rgba(255, 255, 255, 0.95);
 }
 
+h2 {
+	font-size: 1.75rem;
+	margin-bottom: 1.5rem;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+p {
+	margin: 0 0 1rem 0;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #333;
+	margin: 2rem 0;
+}
+
+strong {
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.95);
+}
+
 /* List Styles */
 ul {
 	list-style: none;
@@ -70,19 +94,40 @@ li {
 	gap: 1rem;
 }
 
-li span,
-li input {
+li span {
 	flex: 1;
 	font-weight: 500;
 	font-size: 0.875rem;
 	font-family: inherit;
 	color: #ffffff;
+	transition: all 0.2s ease;
+	word-break: break-word;
 }
 
-li input {
+li.completed span {
+	text-decoration: line-through;
+	color: rgba(255, 255, 255, 0.5);
+	opacity: 0.7;
+}
+
+li input[type="text"] {
 	padding: 0.5rem 1rem;
 	border-radius: 8px;
 	transition: all 0.2s ease;
+	flex: 1;
+	font-weight: 500;
+	font-size: 0.875rem;
+	font-family: inherit;
+	color: #ffffff;
+	background-color: #2a2a2a;
+	border: 1px solid #404040;
+}
+
+li input[type="text"]:focus {
+	outline: none;
+	border-color: #646cff;
+	background-color: #333;
+	box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
 }
 
 li:hover {
@@ -94,6 +139,25 @@ li:hover {
 
 li:last-child {
 	margin-bottom: 0;
+}
+
+/* Checkbox Styles */
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	accent-color: #646cff;
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:hover {
+	transform: scale(1.1);
+}
+
+input[type="checkbox"]:focus {
+	outline: 2px solid rgba(100, 108, 255, 0.5);
+	outline-offset: 2px;
 }
 
 /* Form Elements */
@@ -165,6 +229,134 @@ li button:hover {
 	box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
+li button:first-of-type {
+	background-color: #646cff;
+}
+
+li button:first-of-type:hover {
+	background-color: #5a62d9;
+	box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
+}
+
+/* Button States */
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	transform: none !important;
+	box-shadow: none !important;
+}
+
+button:disabled:hover {
+	background-color: inherit;
+	transform: none;
+	box-shadow: none;
+}
+
+/* Links */
+a {
+	color: #e5e8ff;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 0.9rem;
+	padding: 0.55rem 1.05rem;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	flex-shrink: 0;
+	background-color: rgba(100, 108, 255, 0.35);
+	border: 1px solid rgba(100, 108, 255, 0.65);
+	box-shadow: 0 6px 20px rgba(100, 108, 255, 0.2);
+}
+
+a:hover {
+	color: #ffffff;
+	background-color: #5a62d9;
+	border-color: #7a82ff;
+	transform: translateY(-1px);
+	box-shadow: 0 10px 24px rgba(100, 108, 255, 0.35);
+}
+
+a:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.3);
+}
+
+/* Filter Buttons */
+.filter-buttons {
+	display: flex;
+	gap: 0.75rem;
+	margin-bottom: 2rem;
+	margin-top: 0;
+	flex-wrap: wrap;
+}
+
+.filter-buttons button {
+	background-color: #2a2a2a;
+	border: 1px solid #404040;
+	color: rgba(255, 255, 255, 0.9);
+	padding: 0.625rem 1.25rem;
+	font-size: 0.875rem;
+}
+
+.filter-buttons button:hover:not(:disabled) {
+	background-color: #333;
+	border-color: #505050;
+	color: #ffffff;
+}
+
+.filter-buttons button:disabled {
+	background-color: #5a62d9;
+	border-color: #5a62d9;
+	color: #ffffff;
+	opacity: 1;
+	cursor: default;
+}
+
+.filter-buttons button:disabled:hover {
+	background-color: #5a62d9;
+	transform: none;
+	box-shadow: none;
+}
+
+/* Statistics - блок с количеством задач */
+#app > div > div:last-child > div:first-child {
+	background-color: #1f1f29;
+	padding: 1rem 1.25rem;
+	border-radius: 12px;
+	margin-bottom: 1.5rem;
+	border: 1px solid #33384d;
+	font-size: 0.95rem;
+	color: rgba(255, 255, 255, 0.92);
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	align-items: center;
+}
+
+/* Loading and Error States */
+#app > div > div:first-child,
+#app > div > div:nth-child(2) {
+	text-align: center;
+	padding: 3rem 2rem;
+	color: rgba(255, 255, 255, 0.88);
+	font-size: 1.125rem;
+	background: linear-gradient(135deg, rgba(100, 108, 255, 0.12), rgba(100, 108, 255, 0.05));
+	border: 1px solid rgba(100, 108, 255, 0.25);
+	border-radius: 12px;
+	box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 /* Form Container */
 #app > input + button {
 	width: 100%;
@@ -228,6 +420,90 @@ li button:hover {
 	li button:hover {
 		background-color: #c82333;
 	}
+
+	h2 {
+		color: #1a1a1a;
+	}
+
+	p {
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	hr {
+		border-top-color: #e0e0e0;
+	}
+
+	strong {
+		color: #1a1a1a;
+	}
+
+	li.completed span {
+		color: rgba(0, 0, 0, 0.4);
+	}
+
+	input[type="checkbox"] {
+		accent-color: #646cff;
+	}
+
+	a {
+		color: #2f37a8;
+		background-color: rgba(100, 108, 255, 0.16);
+		border-color: rgba(100, 108, 255, 0.4);
+		box-shadow: 0 8px 18px rgba(100, 108, 255, 0.18);
+	}
+
+	a:hover {
+		color: #1f2696;
+		background-color: rgba(100, 108, 255, 0.22);
+		border-color: rgba(100, 108, 255, 0.6);
+	}
+
+	.filter-buttons button {
+		background-color: #f5f5f5;
+		border-color: #e0e0e0;
+		color: rgba(0, 0, 0, 0.85);
+	}
+
+	.filter-buttons button:hover:not(:disabled) {
+		background-color: #e8e8e8;
+		border-color: #d0d0d0;
+		color: rgba(0, 0, 0, 0.95);
+	}
+
+	.filter-buttons button:disabled {
+		background-color: #5a62d9;
+		border-color: #5a62d9;
+		color: #ffffff;
+	}
+
+	.filter-buttons button:disabled:hover {
+		background-color: #5a62d9;
+	}
+
+	#app > div > div:last-child > div:first-child {
+		background-color: #ffffff;
+		border-color: #e0e0e0;
+		color: rgba(0, 0, 0, 0.9);
+		box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+	}
+
+	#app > div > div:first-child,
+	#app > div > div:nth-child(2) {
+		color: rgba(0, 0, 0, 0.8);
+		background: linear-gradient(135deg, rgba(100, 108, 255, 0.1), rgba(100, 108, 255, 0.04));
+		border-color: rgba(100, 108, 255, 0.2);
+	}
+
+	li input[type="text"] {
+		background-color: #ffffff;
+		border-color: #e0e0e0;
+		color: #1a1a1a;
+	}
+
+	li input[type="text"]:focus {
+		background-color: #ffffff;
+		border-color: #646cff;
+	}
 }
 
 /* Responsive */
@@ -248,6 +524,20 @@ li button:hover {
 
 	li button {
 		width: 100%;
+		margin-top: 0.5rem;
+	}
+
+	.filter-buttons {
+		flex-direction: column;
+	}
+
+	.filter-buttons button {
+		width: 100%;
+	}
+
+	a {
+		width: 100%;
+		text-align: center;
 		margin-top: 0.5rem;
 	}
 }
