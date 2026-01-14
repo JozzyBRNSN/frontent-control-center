@@ -1,53 +1,43 @@
 <script>
+import { useTaskStore } from "../stores/tasks.js";
+
 export default {
 	props: ["id"],
-	data() {
-		return {
-			task: null,
-			isLoading: true,
-			isError: false,
-		};
-	},
 	methods: {
-		async fetchTasks() {
-			this.isLoading = true;
-			this.isError = false;
-			try {
-				const response = await fetch(
-					`https://jsonplaceholder.typicode.com/todos/${this.id}`
-				);
-				if (!response.ok) throw new Error("Ошибка сети");
-				const data = await response.json();
-				this.task = {
-					userId: data.userId,
-					id: data.id,
-					title: `Задача ${this.id}: ${data.title}`,
-					completed: data.completed,
-				};
-			} catch (e) {
-				this.isError = true;
-			} finally {
-				this.isLoading = false;
-			}
+		fetchTaskById() {
+			this.taskStore.fetchTaskById(this.id);
 		},
-
 		goBack() {
 			this.$router.push({ name: "Tasks" });
 		},
 	},
+	computed: {
+		taskStore() {
+			return useTaskStore();
+		},
+		currentTask() {
+			return this.taskStore.currentTask;
+		},
+		isTaskLoading() {
+			return this.taskStore.isTaskLoading;
+		},
+		isError() {
+			return this.taskStore.isError;
+		},
+	},
 	mounted() {
-		this.fetchTasks();
+		return this.fetchTaskById();
 	},
 };
 </script>
 
 <template>
 	<div>
-		<div v-if="isLoading">Загрузка...</div>
+		<div v-if="isTaskLoading">Загрузка...</div>
 		<div v-else-if="isError">Ошибка загрузки задачи</div>
 		<div v-else>
-			<h1>{{ task.title }}</h1>
-			<p>Статус: {{ task.completed ? "Выполнено" : "Активно" }}</p>
+			<h1>{{ currentTask?.title }}</h1>
+			<p>Статус: {{ currentTask?.completed ? "Выполнено" : "Активно" }}</p>
 			<button @click="goBack">Назад к списку</button>
 			<br />
 			<br />
@@ -57,7 +47,7 @@ export default {
 			<br />
 			<span
 				>Номер пользователя добавившего задачу:
-				<strong>{{ task.userId }}</strong></span
+				<strong>{{ currentTask?.userId }}</strong></span
 			>
 		</div>
 	</div>

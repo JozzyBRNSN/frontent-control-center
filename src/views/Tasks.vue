@@ -1,4 +1,5 @@
 <script>
+import { useTaskStore } from "../stores/tasks";
 import FilterButtons from "../components/FilterButtons.vue";
 import ItemRow from "../components/ItemRow.vue";
 export default {
@@ -8,86 +9,59 @@ export default {
 	},
 	data() {
 		return {
-			items: [],
 			value: "",
 			activeFilter: "all",
-			isLoading: true,
-			isError: false,
 		};
 	},
 	methods: {
-		addNewItem() {
-			if (this.value.trim() === "") {
-				return;
-			}
-			const maxId = this.items.length
-				? Math.max(...this.items.map(item => item.id))
-				: 0;
-			const newId = maxId + 1;
-			this.items.push({ id: newId, title: this.value });
+		addNewTask() {
+			this.taskStore.addTask(this.value);
 			this.value = "";
 		},
-		removeItem(id) {
-			this.items = this.items.filter(item => item.id !== id);
+		removeTask(id) {
+			this.taskStore.removeTask(id);
 		},
-		updateItem({ id, title }) {
-			const item = this.items.find(item => item.id === id);
-			if (item) {
-				item.title = title;
-			}
+		toggleTask(id) {
+			this.taskStore.toggleTaskStatus(id);
+		},
+		updateTask(payload) {
+			this.taskStore.updateTask(payload);
 		},
 		setFilter(filter) {
 			this.activeFilter = filter;
 		},
-		toggleCompleted(id) {
-			const item = this.items.find(item => item.id === id);
-			if (item) {
-				item.completed = !item.completed;
-			}
-		},
-		async fetchData() {
-			this.isLoading = true;
-			this.isError = false;
-			try {
-				const response = await fetch(
-					"https://jsonplaceholder.typicode.com/todos?_limit=10"
-				);
-				if (!response.ok) throw new Error("Ошибка сети");
-				const data = await response.json();
-				this.items = data.map(d => ({
-					id: d.id,
-					title: d.title,
-					completed: d.completed,
-				}));
-			} catch (e) {
-				this.isError = true;
-			} finally {
-				this.isLoading = false;
-			}
-		},
 	},
 	computed: {
+		taskStore() {
+			return useTaskStore();
+		},
 		totalCount() {
-			return this.items.length;
+			return this.taskStore.items.length;
 		},
 		completedCount() {
-			return this.items.filter(item => item.completed).length;
+			return this.taskStore.items.filter(task => task.completed).length;
 		},
 		activeCount() {
-			return this.items.filter(item => !item.completed).length;
+			return this.taskStore.items.filter(task => !task.completed).length;
 		},
 		visibleItems() {
 			if (this.activeFilter === "all") {
-				return this.items;
+				return this.taskStore.items;
 			} else if (this.activeFilter === "completed") {
-				return this.items.filter(item => item.completed);
+				return this.taskStore.items.filter(task => task.completed);
 			} else if (this.activeFilter === "active") {
-				return this.items.filter(item => !item.completed);
+				return this.taskStore.items.filter(task => !task.completed);
 			}
+		},
+		isLoading() {
+			return this.taskStore.isLoading;
+		},
+		isError() {
+			return this.taskStore.isError;
 		},
 	},
 	mounted() {
-		this.fetchData();
+		this.taskStore.fetchTasks();
 	},
 };
 </script>
@@ -109,13 +83,13 @@ export default {
 					:id="item.id"
 					:title="item.title"
 					:completed="item.completed"
-					@remove="removeItem"
-					@update="updateItem"
-					@toggle="toggleCompleted(item.id)"
+					@remove="removeTask"
+					@update="updateTask"
+					@toggle="toggleTask(id)"
 				/>
 			</ul>
-			<input type="text" v-model="value" @keyup.enter="addNewItem" />
-			<button @click="addNewItem">Добавить</button>
+			<input type="text" v-model="value" @keyup.enter="addNewTask" />
+			<button @click="addNewTask">Добавить</button>
 		</div>
 	</div>
 </template>

@@ -1,11 +1,8 @@
 <script>
+import { useTaskStore } from "../stores/tasks";
+import { RouterLink } from "vue-router";
+
 export default {
-	data() {
-		return {
-			isEditing: false,
-			editTitle: this.title,
-		};
-	},
 	props: {
 		id: {
 			type: Number,
@@ -20,9 +17,15 @@ export default {
 			required: true,
 		},
 	},
+	data() {
+		return {
+			isEditing: false,
+			editTitle: this.title,
+		};
+	},
 	methods: {
 		handleRemove() {
-			this.$emit("remove", this.id);
+			this.taskStore.removeTask(this.id);
 		},
 		startEdit() {
 			this.isEditing = true;
@@ -33,11 +36,16 @@ export default {
 			this.editTitle = this.title;
 		},
 		saveEdit() {
-			this.$emit("update", {
-				id: this.id,
-				title: this.editTitle,
-			});
+			this.taskStore.updateTask({ id: this.id, title: this.editTitle });
 			this.cancelEdit();
+		},
+		toggleStatus() {
+			this.taskStore.toggleTaskStatus(this.id);
+		},
+	},
+	computed: {
+		taskStore() {
+			return useTaskStore();
 		},
 	},
 };
@@ -45,7 +53,7 @@ export default {
 
 <template>
 	<li v-if="!isEditing">
-		<input type="checkbox" :checked="completed" @change="$emit('toggle')" />
+		<input type="checkbox" :checked="completed" @change="toggleStatus" />
 		<span>{{ id }}. {{ title }}</span>
 		<button @click="startEdit">Редактировать</button>
 		<button @click="handleRemove">Удалить</button>
