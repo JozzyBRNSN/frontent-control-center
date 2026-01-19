@@ -1,75 +1,58 @@
-<script>
+<script setup>
+import { ref, onMounted, computed } from "vue";
 import { useTaskStore } from "../stores/tasks";
+import { useTaskFilters } from "../composables/useTaskFilters";
 import FilterButtons from "../components/FilterButtons.vue";
 import ItemRow from "../components/ItemRow.vue";
-export default {
-	components: {
-		FilterButtons,
-		ItemRow,
-	},
-	data() {
-		return {
-			value: "",
-			activeFilter: "all",
-		};
-	},
-	methods: {
-		addNewTask() {
-			this.taskStore.addTask(this.value);
-			this.value = "";
-		},
-		removeTask(id) {
-			this.taskStore.removeTask(id);
-		},
-		toggleTask(id) {
-			this.taskStore.toggleTaskStatus(id);
-		},
-		updateTask(payload) {
-			this.taskStore.updateTask(payload);
-		},
-		setFilter(filter) {
-			this.activeFilter = filter;
-		},
-		clearData() {
-			localStorage.removeItem("tasks");
-			location.reload();
-		},
-	},
-	computed: {
-		taskStore() {
-			return useTaskStore();
-		},
-		totalCount() {
-			return this.taskStore.items.length;
-		},
-		completedCount() {
-			return this.taskStore.items.filter(task => task.completed).length;
-		},
-		activeCount() {
-			return this.taskStore.items.filter(task => !task.completed).length;
-		},
-		visibleItems() {
-			if (this.activeFilter === "all") {
-				return this.taskStore.items;
-			} else if (this.activeFilter === "completed") {
-				return this.taskStore.items.filter(task => task.completed);
-			} else if (this.activeFilter === "active") {
-				return this.taskStore.items.filter(task => !task.completed);
-			}
-		},
-		isLoading() {
-			return this.taskStore.isLoading;
-		},
-		isError() {
-			return this.taskStore.isError;
-		},
-	},
-	mounted() {
-		if (this.taskStore.items.length === 0) {
-			this.taskStore.fetchTasks();
-		}
-	},
+
+const taskStore = useTaskStore();
+
+const taskValue = ref("");
+
+const addNewTask = () => {
+	taskStore.addTask(taskValue.value);
+	taskValue.value = "";
 };
+
+const removeTask = id => {
+	taskStore.removeTask(id);
+};
+
+const toggleTask = id => {
+	taskStore.toggleTaskStatus(id);
+};
+
+const updateTask = payload => {
+	taskStore.updateTask(payload);
+};
+
+const clearData = () => {
+	localStorage.remove("tasks");
+	location.reload();
+};
+
+const isLoading = computed(() => {
+	return taskStore.isLoading;
+});
+
+const isError = computed(() => {
+	return taskStore.isError;
+});
+
+onMounted(() => {
+	if (taskStore.items.length === 0) {
+		taskStore.fetchTasks();
+	}
+});
+
+const {
+	activeFilter,
+	setFilter,
+	visibleItems,
+	totalCount,
+	completedCount,
+	activeCount,
+} = useTaskFilters(taskStore.items);
 </script>
 
 <template>
@@ -92,7 +75,7 @@ export default {
 					:display-index="index + 1"
 					@remove="removeTask"
 					@update="updateTask"
-					@toggle="toggleTask(id)"
+					@toggle="toggleTask(item.id)"
 				/>
 			</ul>
 			<input type="text" v-model="value" @keyup.enter="addNewTask" />
